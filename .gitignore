@@ -1,6 +1,7 @@
 build/
 *.o
 *.a
+*.val
 doc/*.aux
 doc/*.dvi
 doc/*.log

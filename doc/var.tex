@@ -15,14 +15,21 @@
 \textheight=23cm
 \begin{document}
 
-\title{\texttt{var} \input{version}: \emph{Description}}
+\title{\texttt{var} \input{version}: Compute Mean and Variance of a List of Numbers}
 \author{\input{author}}
 \input{date}
 \date{\displaydate{tagDate}}
 \maketitle
 
 \section{Introduction} 
-\emph{Introduction}
+In daily computing it is often necessary to quickly compute the mean
+and variance of a list of numbers. The program \ty{var} reads a list
+of numbers either from the standard input or from a file and returns
+the mean and the variance. By default it uses a two-pass algorithm to
+compute the variance, which is numerically more stable but marginally
+slower than its one-pass equivalent. For teaching purposes I also
+implemented the one-pass algorithm, which should in all every-day
+situations return the same result.
 
 \section{Getting Started}
 The program \texttt{var} was written in C on a computer running Linux.
@@ -55,6 +62,14 @@ located in
 \begin{verbatim}
 doc/var.pdf
 \end{verbatim}
+\item Apply to example data
+\begin{verbatim}
+var data/example.txt
+#n	mean	var
+10	0.56419	0.0887994
+\end{verbatim}
+The three columns contain the sample size, followed by the mean and
+the variance.
 \end{itemize}
 
 \section{Change Log}

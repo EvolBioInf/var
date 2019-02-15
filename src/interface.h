@@ -15,7 +15,7 @@ typedef struct args{
   char    h; /* help message?         */
   char    v; /* version message?      */
   char  err; /* error                 */
-  int     i; /* iterations            */
+  char    o; /* one-pass algorithm?   */
   char **fi; /* input files           */
   int    nf; /* number of input files */
 } Args;

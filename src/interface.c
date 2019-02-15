@@ -17,8 +17,8 @@ Args *newArgs() {
   Args *args = (Args *)emalloc(sizeof(Args));
   args->h   = 0;
   args->v   = 0;
+  args->o   = 0;
   args->err = 0;
-  args->i   = DEFAULT_I;
   return args;
 }
 
@@ -28,13 +28,13 @@ void freeArgs(Args *args) {
 
 Args *getArgs(int argc, char *argv[]) {
   int c;
-  char *optString = "hvi:";
+  char *optString = "hvo";
   Args *args = newArgs();
 
   while ((c = getopt(argc, argv, optString)) != -1) {
     switch(c) {
-    case 'i': /* iterations */
-      args->i = atoi(optarg);
+    case 'o': /* one-pass algorithm */
+      args->o = 1;
       break;
     case 'h': /* help       */
       args->h = 1;
@@ -63,10 +63,10 @@ Args *getArgs(int argc, char *argv[]) {
 
 void printUsage() {
   printf("Usage: %s [options] [inputFiles]\n", progname());
-  printf("<DESCRIPTION>\n");
-  printf("Example: %s -i 2\n", progname());
+  printf("Compute mean and variance from a list of numbers using two-pass algorithm\n");
+  printf("Example: %s foo.dat\n", progname());
   printf("Options:\n");
-  printf("\t[-i <NUM> iterations; default: %d]\n", DEFAULT_I);
+  printf("\t[-o one-pass algorithm; default: two-pass]\n");
   printf("\t[-h print this help message and exit]\n");
   printf("\t[-v print version & program information and exit]\n");
   exit(0);

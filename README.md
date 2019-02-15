@@ -2,7 +2,7 @@
 ## Author
 Bernhard Haubold, `haubold@evolbio.mpg.de`
 ## Description
-DESCRIPTION
+Compute mean and variance from a list of numbers.
 ## Compile
 Compile the sources using `make`; the executable `var` is now in the directory `build`
 ## Documentation

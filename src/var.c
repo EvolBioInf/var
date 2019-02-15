@@ -7,12 +7,66 @@
  ****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "interface.h"
 #include "eprintf.h"
+#include "tab.h"
 
-void scanFile(FILE *fp, Args *args) {
-  for(int i = 0; i < args->i; i++)
-    printf("Test output.\n");
+void printRes(long n, double m, double v) {
+  printf("#n\tmean\tvar\n");
+  printf("%ld\t%g\t%g\n", n, m, v);
+}
+
+void onePass(FILE *fp) {
+  char *line;
+  double x, sx = 0., sxx = 0., v, m;
+  long n = 0;
+
+  while((line = tabGetLine(fp)) != NULL) {
+    if(line[0] == '#' || isalpha(line[0])) /* skip lines not containing a number */
+      continue;
+    x = atof(line);
+    sx += x;
+    sxx += x * x;
+    n++;
+  }
+  v = (sxx - sx * sx / n) / (n - 1);
+  m = sx / n;
+  printRes(n, m, v);
+}
+
+void twoPass(FILE *fp) {
+  long n = 0;
+  long i;
+  long maxN = 1;
+  double x, mean, sx, sxx, var, diff;
+  double *arr = emalloc(maxN * sizeof(double));
+  char *line;
+
+  while((line = tabGetLine(fp)) != NULL) {
+    if(line[0] == '#' || isalpha(line[0])) /* skip lines not containing a number */
+      continue;
+    x = atof(line);
+    arr[n++] = x;
+    if(n == maxN){
+      maxN *= 2;
+      arr = erealloc(arr, maxN * sizeof(double));
+    }
+  }
+  arr = erealloc(arr, n * sizeof(double));
+  mean = 0;
+  for(i=0;i<n;i++)
+    mean += arr[i];
+  mean /= n;
+  sx = sxx = 0.;
+  for(i=0;i<n;i++){
+    diff = arr[i] - mean;
+    sx += diff;
+    sxx += diff * diff;
+  }
+  var = (sxx-sx*sx/n)/(n-1);
+  printRes(n, mean, var);
+ free(arr);
 }
 
 int main(int argc, char *argv[]){
@@ -26,14 +80,21 @@ int main(int argc, char *argv[]){
     printUsage();
   if(args->nf == 0) {
     fp = stdin;
-    scanFile(fp, args);
+    if(args->o)
+      onePass(fp);
+    else
+      twoPass(fp);
   } else {
     for(int i = 0; i < args->nf; i++) {
       fp = efopen(args->fi[i], "r");
-      scanFile(fp, args);
+      if(args->o)
+	onePass(fp);
+      else
+	twoPass(fp);
       fclose(fp);
     }
   }
+  tabFree();
   freeArgs(args);
   free(progname());
   return 0;
