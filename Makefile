@@ -1,4 +1,4 @@
-all:
+all: 
 	make -C common
 	make -C src
 	mkdir -p build
